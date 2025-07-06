@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to My Lame Ol' Site</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+    }
+    .blinker {
+      animation: blink 1s steps(1) infinite;
+      color: lime;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    a {
+      color: rgb(185, 35, 35);
+      text-decoration: none;
+    }
+    a:hover {
+      text-shadow: 0 0 5px rgb(207, 43, 70);
+    }
+  </style>
+</head>
+<body>
+  <h1>roadkiill's cozy trash pile</h1>
+  <p>welcome to mah trash pile, hosted on <a href="https://github.com/" target="_blank">GitHub Pages</a> cuz why not.</p>
+  <p>more stuff maybe coming</p>
+  <p class="blinker">>_</p>
+</body>
+</html>
