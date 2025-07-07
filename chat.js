@@ -20,10 +20,6 @@ const newMsgSound = document.getElementById("newMsgSound");
 const pfpInput = document.getElementById("pfpInput");
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsMenu = document.getElementById("settings");
-const safeUser = escapeHTML(data.user);
-const safeText = escapeHTML(data.text);
-
-p.innerHTML = `<span class='username' style='color:${data.color}'>${safeUser}:</span> ${safeText}`;
 
 settingsBtn.addEventListener("click", () => {
   settingsMenu.style.display = settingsMenu.style.display === "none" ? "block" : "none";
@@ -67,15 +63,15 @@ function sendMessage() {
     time: Date.now()
   };
 
-  function escapeHTML(str) {
+function escapeHTML(str) {
   return str.replace(/[&<>"']/g, match => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     "\"": "&quot;",
     "'": "&#039;"
-  }[match]));
-}
+    }[match]));
+  }
 
   if (file) {
     const reader = new FileReader();
@@ -160,13 +156,3 @@ document.getElementById("renameBtn").addEventListener("click", () => {
     alert("Username updated!");
   }
 });
-
-function escapeHTML(str) {
-  return str.replace(/[&<>"']/g, match => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#039;"
-  }[match]));
-}
