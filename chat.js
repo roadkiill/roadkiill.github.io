@@ -160,3 +160,13 @@ document.getElementById("renameBtn").addEventListener("click", () => {
     alert("Username updated!");
   }
 });
+
+function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, match => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  }[match]));
+}
