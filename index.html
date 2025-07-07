@@ -1,74 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>super pro chat - Moved!</title>
-    <style>
-        body {
-            background-color: #0e0e0e;
-            color: #fff;
-            font-family: 'Comic Sans MS', sans-serif;
-            text-align: center;
-            padding: 60px;
-        }
+  <title>Under Construction</title>
+  <style>
+    body {
+      background-color: yellow;
+      color: red;
+      font-family: Comic Sans MS, cursive;
+      text-align: center;
+      padding-top: 100px;
+      animation: flicker 1s infinite;
+    }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #6d4db1;
-        }
+    h1 {
+      font-size: 72px;
+      text-shadow: 2px 2px black;
+    }
 
-        p {
-            font-size: 1.3em;
-            margin-bottom: 30px;
-        }
+    .blinky {
+      font-size: 48px;
+      animation: blink 0.8s step-start infinite;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 14px 28px;
-            margin: 10px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
 
-        .download-btn {
-            background-color: #4cff77;
-            color: #000;
-        }
-
-        .download-btn:hover {
-            background-color: #38e067;
-        }
-
-        .discord-btn {
-            background-color: #5865F2;
-            color: white;
-        }
-
-        .discord-btn:hover {
-            background-color: #4752c4;
-        }
-
-        .note {
-            font-size: 0.9em;
-            color: #aaa;
-            margin-top: 40px;
-        }
-    </style>
+    @keyframes flicker {
+      0%   { background-color: yellow; }
+      50%  { background-color: orange; }
+      100% { background-color: yellow; }
+    }
+  </style>
 </head>
 <body>
-    <h1>🚚 We Moved!</h1>
-    <p>Our chat system has been migrated to a shiny new desktop app!</p>
-    <a class="btn download-btn" href="https://drive.google.com/file/d/1xdL2HHd3YKdtwUtKuAWaCsmUlKYHIiRY/view?usp=sharing" target="_blank">⬇️ Download the Chat App</a>
-    <br>
-    <a class="btn discord-btn" href="https://discord.gg/6xBkjb34m5" target="_blank">💬 Join our Discord</a>
-
-    <div class="note">
-        (I promise it's more stable than our old website. kinda.)
-    </div>
+  <h1>🚧 UNDER CONSTRUCTION 🚧</h1>
+  <p class="blinky">Come back later... or don't.</p>
+  <img src="https://www.animatedimages.org/data/media/1212/animated-construction-image-0012.gif" alt="GIF of a working guy" />
+  <br><br>
+  <marquee scrollamount="20">🛠️ We're making something epik! 🛠️</marquee>
 </body>
 </html>
