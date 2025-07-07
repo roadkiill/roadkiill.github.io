@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>epik chat</title>
+  <title>epikproathingy6000 chat</title>
   <style>
     :root {
       --bg-color: #1e1f22;
@@ -38,6 +38,7 @@
       color: var(--accent);
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      position: relative;
     }
 
     #chat {
@@ -54,7 +55,6 @@
 
     .username {
       font-weight: bold;
-      color: var(--accent);
     }
 
     .message-file {
@@ -91,11 +91,57 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    #settings {
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      background: var(--card-color);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+      display: none;
+    }
+
+    #settingsBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    #pfpInputLabel {
+      display: inline-block;
+      background-color: #40444b;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      margin-top: 5px;
+    }
+
+    #pfpInput {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div id="chat-container">
-    <div id="header">roadkiill's chatroom</div>
+    <div id="header">
+      epikproathingy6000 - ChatZone 9000
+      <button id="settingsBtn">⚙️</button>
+    </div>
+
+    <div id="settings">
+      <label><input type="checkbox" id="soundToggle"> Message Sound</label><br>
+      <label><input type="checkbox" id="notifyToggle"> Desktop Notifications</label><br>
+      <label id="pfpInputLabel">Upload Profile Pic<input type="file" id="pfpInput" accept="image/*"></label>
+    </div>
 
     <div id="chat"></div>
 
@@ -105,6 +151,8 @@
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
+
+  <audio id="newMsgSound" src="newMsg.mp3"></audio>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -125,21 +173,51 @@
     const chatBox = document.getElementById("chat");
     const msgInput = document.getElementById("msgInput");
     const fileInput = document.getElementById("fileInput");
+    const soundToggle = document.getElementById("soundToggle");
+    const notifyToggle = document.getElementById("notifyToggle");
+    const newMsgSound = document.getElementById("newMsgSound");
+    const pfpInput = document.getElementById("pfpInput");
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsMenu = document.getElementById("settings");
+
+    settingsBtn.addEventListener("click", () => {
+      settingsMenu.style.display = settingsMenu.style.display === "none" ? "block" : "none";
+    });
 
     let username = localStorage.getItem("epikUser") || null;
+    let color = localStorage.getItem("epikColor") || null;
+    let pfp = localStorage.getItem("epikPFP") || null;
+    let lastPfpUpdate = parseInt(localStorage.getItem("epikPFPTime") || "0");
+
     if (!username) {
       username = prompt("Choose your username:") || "anon";
       localStorage.setItem("epikUser", username);
     }
+    if (!color) {
+      color = `hsl(${Math.floor(Math.random()*360)}, 70%, 70%)`;
+      localStorage.setItem("epikColor", color);
+    }
+
+    pfpInput.addEventListener("change", () => {
+      if (Date.now() - lastPfpUpdate < 1800000) return alert("You can only update PFP every 30 mins!");
+      const file = pfpInput.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        localStorage.setItem("epikPFP", e.target.result);
+        localStorage.setItem("epikPFPTime", Date.now().toString());
+      };
+      if (file) reader.readAsDataURL(file);
+    });
 
     function sendMessage() {
       const msg = msgInput.value.trim();
       const file = fileInput.files[0];
-
       if (!msg && !file) return;
 
       const messageData = {
         user: username,
+        color,
+        pfp,
         text: msg,
         time: Date.now()
       };
@@ -156,14 +234,18 @@
       } else {
         chatRef.push(messageData);
       }
-
       msgInput.value = "";
     }
+
+    let hidden = false;
+    document.addEventListener("visibilitychange", () => hidden = document.hidden);
 
     chatRef.limitToLast(100).on("child_added", snapshot => {
       const data = snapshot.val();
       const p = document.createElement("p");
-      p.innerHTML = `<span class="username">${data.user}:</span> ${data.text || ""}`;
+      const colorStyle = `style=\"color:${data.color || '#fff'}\"`;
+      const pfpImg = data.pfp ? `<img src='${data.pfp}' style='width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;'>` : "";
+      p.innerHTML = `${pfpImg}<span class='username' ${colorStyle}>${data.user}:</span> ${data.text || ""}`;
 
       if (data.file) {
         const mime = data.fileType;
@@ -189,11 +271,23 @@
 
       chatBox.appendChild(p);
       chatBox.scrollTop = chatBox.scrollHeight;
+
+      if (soundToggle.checked) newMsgSound.play();
+
+      if (notifyToggle.checked && hidden) {
+        if (Notification.permission === "granted") {
+          new Notification(`${data.user}`, { body: data.text });
+        }
+      }
     });
 
     msgInput.addEventListener("keydown", e => {
       if (e.key === "Enter") sendMessage();
     });
+
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
   </script>
 </body>
 </html>
