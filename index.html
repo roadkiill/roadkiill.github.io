@@ -2,59 +2,160 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>lame chat :P</title>
+  <title>epik chat</title>
   <style>
-    body { background: #111; color: #eee; font-family: monospace; text-align: center; }
-    #chat { border: 2px solid #555; max-height: 60vh; overflow-y: auto; padding: 1em; margin: 1em auto; width: 80%; background: #222; }
-    input, button { padding: 0.5em; font-size: 1em; margin: 0.2em; }
-    #msgInput { width: 60%; }
+    :root {
+      --bg-color: #1e1f22;
+      --card-color: #2f3136;
+      --accent: #7289da;
+      --text: #ffffff;
+      --muted: #b9bbbe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+    }
+
+    #chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #header {
+      background-color: var(--card-color);
+      padding: 1em;
+      font-weight: bold;
+      font-size: 1.5em;
+      color: var(--accent);
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1em;
+      background-color: #202225;
+    }
+
+    #chat p {
+      margin: 0.5em 0;
+      line-height: 1.4;
+    }
+
+    .username {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .message-file {
+      max-width: 300px;
+      max-height: 200px;
+      display: block;
+      margin-top: 5px;
+      border-radius: 6px;
+    }
+
+    #footer {
+      background-color: var(--card-color);
+      padding: 1em;
+      display: flex;
+      gap: 0.5em;
+      align-items: center;
+    }
+
+    input[type="text"], input[type="file"] {
+      flex: 1;
+      padding: 0.5em;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      background-color: #40444b;
+      color: white;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>lame chat</h1>
-  <div>
-    Username: <input id="username" placeholder="anon" />
+  <div id="chat-container">
+    <div id="header">roadkiill's chatroom</div>
+
+    <div id="chat"></div>
+
+    <div id="footer">
+      <input type="file" id="fileInput" accept="image/png, image/jpeg, video/mp4, video/mkv, audio/mp3" />
+      <input type="text" id="msgInput" placeholder="say something..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
-  <div id="chat">Loading chat...</div>
-
-  <input id="msgInput" placeholder="say something goofy..." />
-  <button onclick="sendMessage()">Send</button>
-
-  <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
   <script>
-    // ✨ PASTE YOUR FIREBASE CONFIG HERE ✨
     const firebaseConfig = {
       apiKey: "AIzaSyBJ6Z3zXm57nsuFZntP3z_nau0ns_IZ6l0",
       authDomain: "lame-chat-26bbc.firebaseapp.com",
       databaseURL: "https://lame-chat-26bbc-default-rtdb.firebaseio.com",
       projectId: "lame-chat-26bbc",
-      storageBucket: "lame-chat-26bbc.appspot.com", // ← also fixed .app to .app**spot.com**
+      storageBucket: "lame-chat-26bbc.firebaseapp.com", // ← also fixed .app to .app**spot.com**
       messagingSenderId: "1089604325581",
       appId: "1:108960432558:web:02bf08c3b53936bf4ec83f"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const chatRef = db.ref("messages");
 
     const chatBox = document.getElementById("chat");
-    const usernameInput = document.getElementById("username");
     const msgInput = document.getElementById("msgInput");
+    const fileInput = document.getElementById("fileInput");
+
+    let username = localStorage.getItem("epikUser") || null;
+    if (!username) {
+      username = prompt("Choose your username:") || "anon";
+      localStorage.setItem("epikUser", username);
+    }
 
     function sendMessage() {
-      const username = usernameInput.value.trim() || "anon";
       const msg = msgInput.value.trim();
-      if (!msg) return;
+      const file = fileInput.files[0];
 
-      chatRef.push({
+      if (!msg && !file) return;
+
+      const messageData = {
         user: username,
         text: msg,
         time: Date.now()
-      });
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          messageData.file = e.target.result;
+          messageData.fileType = file.type;
+          chatRef.push(messageData);
+        };
+        reader.readAsDataURL(file);
+        fileInput.value = "";
+      } else {
+        chatRef.push(messageData);
+      }
 
       msgInput.value = "";
     }
@@ -62,7 +163,30 @@
     chatRef.limitToLast(100).on("child_added", snapshot => {
       const data = snapshot.val();
       const p = document.createElement("p");
-      p.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
+      p.innerHTML = `<span class="username">${data.user}:</span> ${data.text || ""}`;
+
+      if (data.file) {
+        const mime = data.fileType;
+        if (mime.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = data.file;
+          img.className = "message-file";
+          p.appendChild(img);
+        } else if (mime.startsWith("video/")) {
+          const vid = document.createElement("video");
+          vid.src = data.file;
+          vid.controls = true;
+          vid.className = "message-file";
+          p.appendChild(vid);
+        } else if (mime.startsWith("audio/")) {
+          const aud = document.createElement("audio");
+          aud.src = data.file;
+          aud.controls = true;
+          aud.className = "message-file";
+          p.appendChild(aud);
+        }
+      }
+
       chatBox.appendChild(p);
       chatBox.scrollTop = chatBox.scrollHeight;
     });
@@ -73,5 +197,3 @@
   </script>
 </body>
 </html>
-
-<!--G-CKB8ZEET4K-->
