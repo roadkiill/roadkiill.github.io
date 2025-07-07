@@ -48,9 +48,50 @@
       background-color: #202225;
     }
 
-    #chat p {
+    .chat-message {
+      position: relative;
       margin: 0.5em 0;
       line-height: 1.4;
+      word-wrap: break-word;
+      padding-right: 50px;
+    }
+
+    .chat-message:hover .reply-btn {
+      display: inline;
+    }
+
+    .reply-btn {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+
+    .timestamp {
+      color: var(--muted);
+      font-size: 0.75em;
+      margin-left: 8px;
+    }
+
+    .reply-context {
+      font-size: 0.75em;
+      color: var(--muted);
+      margin-bottom: 4px;
+      padding-left: 1em;
+      border-left: 2px solid var(--accent);
+    }
+
+    #chat p a {
+      pointer-events: none;
+      color: inherit;
+      text-decoration: none;
     }
 
     .username {
@@ -128,6 +169,17 @@
     #pfpInput {
       display: none;
     }
+
+    #renameBtn {
+      display: inline-block;
+      background-color: #40444b;
+      color: white;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -138,9 +190,10 @@
     </div>
 
     <div id="settings">
-      <label><input type="checkbox" id="soundToggle"> Message Sound (kinda broken)</label><br>
+      <label><input type="checkbox" id="soundToggle"> Message Sound</label><br>
       <label><input type="checkbox" id="notifyToggle"> Desktop Notifications</label><br>
-      <label id="pfpInputLabel">Upload Profile Pic<input type="file" id="pfpInput" accept="image/*"></label>
+      <label id="pfpInputLabel">Upload Profile Pic<input type="file" id="pfpInput" accept="image/*"></label><br>
+      <button id="renameBtn">Change Username</button>
     </div>
 
     <div id="chat"></div>
@@ -157,7 +210,8 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script>
-    const originalSendMessage = sendMessage;
+    let replyContext = null;
+
     function sendMessage() {
       const msgInput = document.getElementById("msgInput");
       const message = msgInput.value.trim();
@@ -165,8 +219,36 @@
         alert("no funny bizness >:(");
         return;
       }
-      originalSendMessage();
+
+      const chatRef = firebase.database().ref("messages");
+      const user = localStorage.getItem("epikUser") || "anon";
+      const color = localStorage.getItem("epikColor") || "#fff";
+      const pfp = localStorage.getItem("epikPFP") || "";
+
+      const msgData = {
+        user,
+        text: message,
+        time: Date.now(),
+        color,
+        pfp,
+      };
+
+      if (replyContext) {
+        msgData.replyTo = replyContext;
+        replyContext = null;
+        document.getElementById("msgInput").placeholder = "say something...";
+      }
+
+      chatRef.push(msgData);
+      msgInput.value = "";
     }
+
+    function setReply(user, text) {
+      replyContext = { user, text };
+      document.getElementById("msgInput").placeholder = `replying to ${user}...`;
+    }
+
+    const originalSendMessage = sendMessage;
   </script>
   <script src="chat.js"></script>
 </body>
