@@ -1,50 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Welcome to My Lame Ol' Site</title>
+  <title>lame chat :P</title>
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      text-align: center;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-    }
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-    }
-    .blinker {
-      animation: blink 1s steps(1) infinite;
-      color: lime;
-    }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-    a {
-      color: rgb(185, 35, 35);
-      text-decoration: none;
-    }
-    a:hover {
-      text-shadow: 0 0 5px rgb(207, 43, 70);
-    }
+    body { background: #111; color: #eee; font-family: monospace; text-align: center; }
+    #chat { border: 2px solid #555; max-height: 60vh; overflow-y: auto; padding: 1em; margin: 1em auto; width: 80%; background: #222; }
+    input, button { padding: 0.5em; font-size: 1em; margin: 0.2em; }
+    #msgInput { width: 60%; }
   </style>
 </head>
 <body>
-  <h1>roadkiill's cozy trash pile</h1>
-  <p>welcome to mah trash pile, hosted on <a href="https://github.com/" target="_blank">GitHub Pages</a> cuz why not.</p>
-  <p>more stuff maybe coming</p>
-  <p class="blinker">>_</p>
+  <h1>lame chat</h1>
+  <div>
+    Username: <input id="username" placeholder="anon" />
+  </div>
+
+  <div id="chat">Loading chat...</div>
+
+  <input id="msgInput" placeholder="say something goofy..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+
+  <script>
+    // ✨ PASTE YOUR FIREBASE CONFIG HERE ✨
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJ6Z3zXm57nsuFZntP3z_nau0ns_IZ6l0",
+      authDomain: "lame-chat-26bbc.firebaseapp.com",
+      databaseURL: "https://lame-chat-26bbc-default-rtdb.firebaseio.com",
+      projectId: "lame-chat-26bbc",
+      storageBucket: "lame-chat-26bbc.firebaseapp.com", // ← also fixed .app to .app**spot.com**
+      messagingSenderId: "1089604325581",
+      appId: "1:108960432558:web:02bf08c3b53936bf4ec83f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const chatRef = db.ref("messages");
+
+    const chatBox = document.getElementById("chat");
+    const usernameInput = document.getElementById("username");
+    const msgInput = document.getElementById("msgInput");
+
+    function sendMessage() {
+      const username = usernameInput.value.trim() || "anon";
+      const msg = msgInput.value.trim();
+      if (!msg) return;
+
+      chatRef.push({
+        user: username,
+        text: msg,
+        time: Date.now()
+      });
+
+      msgInput.value = "";
+    }
+
+    chatRef.limitToLast(100).on("child_added", snapshot => {
+      const data = snapshot.val();
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
+      chatBox.appendChild(p);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    msgInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
 </body>
 </html>
+
+<!--G-CKB8ZEET4K-->
