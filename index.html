@@ -1,43 +1,56 @@
 <!DOCTYPE html>
-<html>
+
+
+<html lang="en">
 <head>
-  <title>Under Construction</title>
-  <style>
-    body {
-      background-color: yellow;
-      color: red;
-      font-family: Comic Sans MS, cursive;
-      text-align: center;
-      padding-top: 100px;
-      animation: flicker 1s infinite;
-    }
-
-    h1 {
-      font-size: 72px;
-      text-shadow: 2px 2px black;
-    }
-
-    .blinky {
-      font-size: 48px;
-      animation: blink 0.8s step-start infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    @keyframes flicker {
-      0%   { background-color: yellow; }
-      50%  { background-color: orange; }
-      100% { background-color: yellow; }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Epikproathingy6000 Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🚧 UNDER CONSTRUCTION 🚧</h1>
-  <p class="blinky">Come back later... or don't.</p>
-  <img src="https://www.animatedimages.org/data/media/1212/animated-construction-image-0012.gif" alt="GIF of a working guy" />
-  <br><br>
-  <marquee scrollamount="20">🛠️ We're making something epik! 🛠️</marquee>
+  <div class="scanline"></div>
+  
+  <header>
+    <h1>Roadkiill's Club</h1>
+    <nav>
+      <a href="#download">Download</a>
+      <a href="#about">About the App</a>
+      <a href="#livefeed">Live Feed</a>
+      <a href="#discord">Discord</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="download" class="panel">
+      <h2>⬇️ Download</h2>
+      <a class="btn" href="https://drive.google.com/file/d/1sgKSK5-MFxjpIXk6-sY4pPagdSnuT3S0/view?usp=sharing" target="_blank">Download Latest Build</a>
+    </section>
+
+    <section id="about" class="panel">
+      <h2>💬 About the App</h2>
+      <p>
+        Welcome to Roadkiill's Club—the goofiest chat experience this side of 2025!  
+        Talk, replay like a legend, and get a random goofy name color on the website!  
+        Now in a slick Python app fresh off GitHub.
+      </p>
+    </section>
+
+    <section id="livefeed" class="panel">
+      <h2>👁️ Live Feed</h2>
+      <div id="chat-box"><em>Loading messages...</em></div>
+    </section>
+
+    <section id="discord" class="panel">
+      <h2>💬 Join our Discord</h2>
+      <a class="btn discord-btn" href="https://discord.gg/6xBkjb34m5" target="_blank">Join the Server</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© JURBLE™ 2025</p>
+  </footer>
+
+  <script src="main.js"></script>
 </body>
 </html>
