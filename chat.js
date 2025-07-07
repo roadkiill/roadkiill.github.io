@@ -129,3 +129,20 @@ msgInput.addEventListener("keydown", e => {
 if (Notification.permission !== "granted") {
   Notification.requestPermission();
 }
+
+document.getElementById("renameBtn").addEventListener("click", () => {
+  const lastChange = parseInt(localStorage.getItem("epikNameTime") || "0");
+  const now = Date.now();
+  if (now - lastChange < 3600000) {
+    alert("You can only change your username once every hour!");
+    return;
+  }
+
+  const newName = prompt("Enter new username:");
+  if (newName) {
+    username = newName;
+    localStorage.setItem("epikUser", username);
+    localStorage.setItem("epikNameTime", now.toString());
+    alert("Username updated!");
+  }
+});
