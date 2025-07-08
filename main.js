@@ -38,5 +38,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   update();
-  setInterval(update,3000);
+  setInterval(update, 3000);
+
+  // Firebase config (not needed for this Realtime-only version but fine to keep)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAlqm3LqUauvCbdHeLJwSb41CH_ZSVzbeM",
+    authDomain: "lame-chat-26bbc.firebaseapp.com",
+    databaseURL: "https://roadkiills-club-default-rtdb.firebaseio.com", // you're reading/writing here
+    projectId: "lame-chat-26bbc",
+    storageBucket: "lame-chat-26bbc.appspot.com",
+    messagingSenderId: "1089604325581",
+    appId: "1:108960432558:web:02bf08c3b53936bf4ec83f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  window.sendMessage = function() {
+    const msg = document.getElementById('messageInput').value.trim();
+    if (!msg) return;
+
+    const now = Math.floor(Date.now() / 1000);
+    fetch('https://roadkiills-club-default-rtdb.firebaseio.com/messages.json', {
+      method: 'POST',
+      body: JSON.stringify({
+        user: "[WEB USER]",
+        text: msg,
+        time: now,
+        color: "#AAAAAA"
+      })
+    })
+    .then(() => {
+      document.getElementById('messageInput').value = "";
+    })
+    .catch((err) => {
+      console.error("Message failed to send!", err);
+    });
+  };
 });
