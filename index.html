@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Roadkiill's Club</title>
+  <title>Epikproathingy6000 Chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+    <!-- Add these in your HTML if not already included -->
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="scanline"></div>
@@ -23,8 +24,8 @@
 
   <main>
     <section id="download" class="panel">
-      <h2>⬇️ Download v0.2.3</h2>
-      <a class="btn" href="https://drive.google.com/file/d/15tmHYVfG-AvZUArzcdr6uDpoBjdZ8Kfy/view?usp=sharing" target="_blank">Download Latest Build</a>
+      <h2>⬇️ Download</h2>
+      <a class="btn" href="https://drive.google.com/file/d/1sgKSK5-MFxjpIXk6-sY4pPagdSnuT3S0/view?usp=sharing" target="_blank">Download Latest Build</a>
     </section>
 
     <section id="about" class="panel">
@@ -39,6 +40,12 @@
     <section id="livefeed" class="panel">
       <h2>👁️ Live Feed</h2>
       <div id="chat-box"><em>Loading messages...</em></div>
+      <div id="web-message-sender">
+  <input type="text" id="messageInput" placeholder="Say something..." />
+
+  <button onclick="sendMessage()">Send</button>
+</div>
+
     </section>
 
     <section id="discord" class="panel">
